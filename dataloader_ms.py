@@ -12,9 +12,9 @@ from match_mnist_svhn_idx import pair_mnist_svhn
 def get_MNIST(batch_size, shuffle=True, device="cuda"):
     kwargs = {'num_workers': 1, 'pin_memory': True} if device == "cuda" else {}
     tx = transforms.ToTensor()
-    train = DataLoader(datasets.MNIST('/home/xal/CMVAE/data', train=True, download=False, transform=tx),
+    train = DataLoader(datasets.MNIST('/home/xal/CMVAE/data', train=True, download=True, transform=tx),
                        batch_size=batch_size, shuffle=shuffle, **kwargs)
-    test = DataLoader(datasets.MNIST('/home/xal/CMVAE/data', train=False, download=False, transform=tx),
+    test = DataLoader(datasets.MNIST('/home/xal/CMVAE/data', train=False, download=True, transform=tx),
                       batch_size=batch_size, shuffle=shuffle, **kwargs)
     return train, test
 
@@ -22,9 +22,9 @@ def get_MNIST(batch_size, shuffle=True, device="cuda"):
 def get_SVHN(batch_size, shuffle=True, device='cuda'):
     kwargs = {'num_workers': 1, 'pin_memory': True} if device == 'cuda' else {}
     tx = transforms.ToTensor()
-    train = DataLoader(datasets.SVHN('/home/xal/CMVAE/data', split='train', download=False, transform=tx),
+    train = DataLoader(datasets.SVHN('/home/xal/CMVAE/data', split='train', download=True, transform=tx),
                        batch_size=batch_size, shuffle=shuffle, **kwargs)
-    test = DataLoader(datasets.SVHN('/home/xal/CMVAE/data', split='test', download=False, transform=tx),
+    test = DataLoader(datasets.SVHN('/home/xal/CMVAE/data', split='test', download=True, transform=tx),
                       batch_size=batch_size, shuffle=shuffle, **kwargs)
     return train, test
 
@@ -60,15 +60,3 @@ def get_MNIST_SVHN(batch_size, shuffle=True, device='cuda', times=10):
     test = DataLoader(test_mnist_svhn, batch_size=batch_size, shuffle=shuffle, **kwargs)
     return train, test
 
-
-if __name__ == '__main__':
-    train, test = get_MNIST_SVHN(128, times=20)
-
-    for mnist, svhn in train:
-        mnist_ = mnist[0][1]
-        svhn_ = svhn[0][1]
-        mnist_ = resize_img(mnist_, torch.Size([3, 32, 32]))
-        # comp = torch.cat([mnist_, svhn_])
-        save_image(mnist_, 'mnist_example.png')
-        save_image(svhn_, 'svhn_example.png')
-        break
